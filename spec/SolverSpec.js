@@ -1,7 +1,26 @@
 describe("Solver", function() {
+  describe("constructor", function() {
+    it("should convert all string values to int", function() {
+      var mas = 
+      [
+        [1, 2, 3, "14 "],
+        ["1", 3, 4, "19"],
+        [2, 1, " 2", 10]
+      ]
+
+      result = new Solver(mas)
+
+      expect(result.coefficients).toEqual([
+        [1, 2, 3, 14],
+        [1, 3, 4, 19],
+        [2, 1, 2, 10]
+      ]);
+    });
+  });
+
   describe("#solve", function() {
-    it("should be able to solve simple case", function() {
-      mas = 
+    it("should be able to solve simple case # 1", function() {
+      var mas = 
       [
         [1, 2, 3, 14],
         [1, 3, 4, 19],
@@ -11,6 +30,19 @@ describe("Solver", function() {
       result = new Solver(mas)
 
       expect(result.solve()).toEqual([1,2,3]);
+    });
+
+    it("should be able to solve simple case # 2", function() {
+      mas = 
+      [
+        [2, 1, -1, 8],
+        [-3, -1, 2, -11],
+        [-2, 1, 2, -3]
+      ]
+
+      result = new Solver(mas)
+
+      expect(result.solve()).toEqual([2,3,-1]);
     });
   });
 
@@ -37,21 +69,6 @@ describe("Solver", function() {
   });
 
   describe("#reduce_third_row", function() {
-    it("should raise if first element in third row is not zero", function() {
-      mas = 
-      [
-        [1, 2, 3, 14],
-        [1, 3, 4, 19],
-        [2, 1, 2, 10]
-      ]
-
-      object = new Solver(mas)
-
-      expect(function() {
-        object.reduce_third_row();
-      }).toThrowError("you should call reduce_second_row first");
-    });
-
     it("should return new Solver object with upper triangular matrix", function() {
       mas = 
       [

@@ -14,10 +14,40 @@ var Solver = function (coefficients) {
     return new Solver(clone_of_coef)
   }
 
+  for (i=0; i < 3; i++) {
+    for(j=0; j < 4; j++) {
+      if (typeof(coefficients[i][j]) == 'string'){
+        coefficients[i][j] = parseInt(coefficients[i][j])
+      }
+    }
+  }
+
   this.coefficients = coefficients
 
   this.solve = function() {
-    return [1,2,3]
+    var reduced = this.reduce_second_row().reduce_third_row()
+
+    var x3 = reduced.coefficients[2][3] / reduced.coefficients[2][2],
+        x2 = (reduced.coefficients[1][3] - (reduced.coefficients[1][2] * x3) ) / reduced.coefficients[1][1],
+        x1 = (reduced.coefficients[0][3] - (reduced.coefficients[0][2] * x3) - (reduced.coefficients[0][1] * x2) ) / reduced.coefficients[0][0]
+
+    return [x1,x2,x3]
+  }
+
+  this.deviation = function() {
+    var solved = this.solve()
+    var dev = []
+
+    for (i = 0; i < 3; i++) {
+      dev.push(
+                solved[0] * this.coefficients[i][0] + 
+                solved[1] * this.coefficients[i][1] + 
+                solved[2] * this.coefficients[i][2] -
+                this.coefficients[i][3]
+              )
+    }
+
+    return dev
   }
 
   this.get_coefficients = function() {
@@ -29,10 +59,6 @@ var Solver = function (coefficients) {
   }
 
   this.reduce_third_row = function() {
-    if ((this.coefficients[1][0] != 0) || (this.coefficients[2][0] != 0)) {
-      throw new Error("you should call reduce_second_row first");
-    }
-
     return reduce_nth_column(this, 2);
   }
 }
